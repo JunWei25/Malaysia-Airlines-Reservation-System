@@ -16,4 +16,5 @@ After the ERD and EERD were drawn a database schema was then created. There are 
 ![sql2](https://user-images.githubusercontent.com/90762158/159117017-724a20fe-3157-41c4-a7bc-ef612d99d037.jpg)
 
 Once the designed phase has been completed, the designed system was then implemented in SQL. Below shows a sample output:
+## Sample Output
 ![sqlOutputExample](https://user-images.githubusercontent.com/90762158/159117221-502d309a-3e36-49d2-9e7f-1ff69a76f067.jpg)
