@@ -1,0 +1,558 @@
+DB NAME: ATRS_MRTT_DB
+
+
+CREATE TABLE AIRLINE_COMPANY_T
+       (ac_id CHAR(6) NOT NULL,
+        ac_name VARCHAR(100) NOT NULL,
+        ac_email_id VARCHAR(40) NOT NULL,
+        ac_contact_number VARCHAR(20) NOT NULL,
+        ac_manager_fname VARCHAR(40) NOT NULL,
+        ac_manager_lname VARCHAR(40) NOT NULL,
+        ac_street VARCHAR(40) NOT NULL,
+        ac_city VARCHAR(40) NOT NULL,
+        ac_state VARCHAR(40) NOT NULL,
+        ac_postcode VARCHAR(40) NULL,
+        ac_country VARCHAR(40) NOT NULL, PRIMARY KEY (ac_id) )
+GO
+
+CREATE TABLE BOOKING_OFFICE_T
+       (bo_id CHAR(5) NOT NULL,
+        bo_name VARCHAR(100) NOT NULL,
+        bo_email_id VARCHAR(40) NOT NULL,
+	bo_state VARCHAR(40) NOT NULL,
+        bo_street VARCHAR(40) NOT NULL,
+	bo_city VARCHAR(40) NOT NULL,
+        bo_postcode VARCHAR(10) NULL,
+        bo_country VARCHAR(40) NOT NULL,
+ 	bo_contact_number VARCHAR(20) NOT NULL,
+	bo_manager_fname VARCHAR(20) NOT NULL,
+        bo_manager_lname VARCHAR(40) NOT NULL PRIMARY KEY (bo_id) )
+GO
+ 
+CREATE TABLE FLIGHT_T
+       (fli_number CHAR(6) NOT NULL,
+        fli_busi_total NUMERIC(10) NOT NULL,
+        fli_busi_booked NUMERIC(10) NOT NULL,
+        fli_busi_available NUMERIC(10) NOT NULL,
+        fli_econ_total NUMERIC(10) NOT NULL,
+        fli_econ_booked NUMERIC(10) NOT NULL,
+        fli_econ_available NUMERIC(10) NOT NULL,
+        fli_cap_fname VARCHAR(40) NOT NULL,
+        fli_cap_lname VARCHAR(40) NOT NULL,
+        fli_co_cap_fname VARCHAR(40) NOT NULL,
+        fli_co_cap_lname VARCHAR(40) NOT NULL,
+        fli_attendant_number NUMERIC(10) NOT NULL,
+        fli_departure_origin VARCHAR(40) NOT NULL,
+        fli_departure_date DATE NOT NULL,
+        fli_departure_time TIME NOT NULL,
+        fli_arrival_dest VARCHAR(40) NOT NULL,
+        fli_arrival_date DATE NOT NULL,
+        fli_arrival_time TIME NOT NULL, PRIMARY KEY(fli_number) )
+GO
+
+CREATE TABLE PILOT_T
+       (pil_id CHAR(6) NOT NULL,
+        pil_fname VARCHAR(40) NOT NULL,
+        pil_lname VARCHAR(40) NOT NULL,
+        pil_dob DATE NOT NULL,
+        pil_gender CHAR(1) NOT NULL,
+        pil_fli_number CHAR(6) NOT NULL,
+	pil_ac_id CHAR(6) NOT NULL,
+        pil_year_of_experience NUMERIC(5,1) NOT NULL,
+        pil_position VARCHAR(40) NOT NULL,
+        pil_status VARCHAR(40) NOT NULL,
+        pil_flying_hour NUMERIC(10,1) NOT NULL,
+        pil_basic_salary NUMERIC(14,2) NOT NULL,
+        pil_bonus NUMERIC(10,2) NOT NULL,
+        pil_allowance NUMERIC(10,2) NOT NULL,
+        pil_street VARCHAR(100) NOT NULL,
+	pil_city VARCHAR(40) NOT NULL,
+	pil_postcode VARCHAR(10) NULL,
+	pil_state VARCHAR(40) NOT NULL,
+	pil_country VARCHAR (40) NOT NULL,PRIMARY KEY(pil_id) )
+GO
+
+CREATE TABLE FLIGHT_ATTENDANT_T
+       (fa_id CHAR(7) NOT NULL,
+        fa_fname VARCHAR(40) NOT NULL,
+        fa_lname VARCHAR(40) NOT NULL,
+        fa_dob DATE NOT NULL,
+	fa_gender CHAR(1) NOT NULL,
+	fa_fli_number CHAR(6) NOT NULL,
+        fa_ac_id CHAR(6) NOT NULL,
+        fa_position VARCHAR(40) NOT NULL,
+        fa_basic_salary NUMERIC(14,2) NOT NULL,
+        fa_bonus NUMERIC(10,2) NULL,
+        fa_allowance NUMERIC(10,2) NULL,
+        fa_street VARCHAR(40) NOT NULL,
+	fa_city VARCHAR(40) NOT NULL,
+	fa_postcode VARCHAR(10) NULL,
+	fa_state VARCHAR(40) NOT NULL,
+	fa_country VARCHAR(40) NOT NULL, PRIMARY KEY(fa_id) )
+GO
+
+CREATE TABLE CUSTOMER_T
+       (cust_id CHAR(6) NOT NULL,
+        cust_fname VARCHAR(40) NOT NULL,
+        cust_lname VARCHAR(40) NOT NULL,
+        cust_dob DATE NOT NULL,
+        cust_gender CHAR(1) NOT NULL,
+        cust_street VARCHAR(40) NOT NULL,
+        cust_city VARCHAR(40) NOT NULL,
+	cust_postcode VARCHAR(10) NULL,
+	cust_state VARCHAR(40) NOT NULL,
+        cust_country VARCHAR(40) NOT NULL, PRIMARY KEY(cust_id) )
+GO
+
+CREATE TABLE FLIGHT_BOOKING_T
+       (cust_id CHAR(6) NOT NULL,
+	fli_number CHAR(6) NOT NULL,
+	fb_number CHAR(7) NOT NULL,
+	fb_status VARCHAR(20) NOT NULL,	 
+	fb_state VARCHAR (40) NOT NULL,
+	fb_date DATE NOT NULL,
+	fb_class VARCHAR(20) NOT NULL,
+	fb_total_price NUMERIC(10,2) NOT NULL,
+	fb_paid_amount NUMERIC(10,2) NULL,
+	fb_outstanding_balance NUMERIC(10,2) NULL,
+	fb_fname VARCHAR(40) NOT NULL,
+        fb_lname VARCHAR(40) NOT NULL, PRIMARY KEY(cust_id,fli_number),
+	FOREIGN KEY (cust_id) REFERENCES CUSTOMER_T(cust_id),
+	FOREIGN KEY (fli_number) REFERENCES FLIGHT_T(fli_number) )
+GO
+
+    
+CREATE TABLE AIRLINE_BOOKING_T
+       (ac_id CHAR(5) NOT NULL,
+        bo_id CHAR(5) NOT NULL, PRIMARY KEY(ac_id, bo_id),
+	FOREIGN KEY (ac_id) REFERENCES AIRLINE_COMPANY_T(ac_id),
+	FOREIGN KEY (bo_id) REFERENCES BOOKING_OFFICE_T(bo_id) )
+GO
+
+CREATE TABLE PILOT_EMAIL_T
+       (pil_id CHAR(6) NOT NULL,
+	pe_id VARCHAR(40) NOT NULL, PRIMARY KEY(pil_id, pe_id),
+	FOREIGN KEY (pil_id) REFERENCES PILOT_T(pil_id) )
+GO
+
+CREATE TABLE PILOT_CONTACT_T
+       (pil_id CHAR(6) NOT NULL,
+        pc_number VARCHAR(20) NOT NULL, PRIMARY KEY(pil_id, pc_number),
+	FOREIGN KEY (pil_id) REFERENCES PILOT_T(pil_id) )
+GO
+
+CREATE TABLE FLIGHT_ATTENDANT_EMAIL_T
+       (fa_id CHAR(7) NOT NULL,
+        fa_email_id VARCHAR(40) NOT NULL, PRIMARY KEY(fa_id, fa_email_id),
+	FOREIGN KEY (fa_id) REFERENCES FLIGHT_ATTENDANT_T (fa_id) )
+GO
+
+CREATE TABLE FLIGHT_ATTENDANT_CONTACT_T
+       (fa_id CHAR(7) NOT NULL,
+        fa_contact_number VARCHAR(20) NOT NULL, PRIMARY KEY(fa_id, fa_contact_number),
+	FOREIGN KEY (fa_id) REFERENCES FLIGHT_ATTENDANT_T (fa_id) )
+GO
+
+CREATE TABLE CUSTOMER_FLIGHT_BOOKING_T
+       (cust_id CHAR(6) NOT NULL,
+        cust_flight_booking_number CHAR(8) NOT NULL, PRIMARY KEY(cust_id, cust_flight_booking_number),
+	FOREIGN KEY (cust_id) REFERENCES CUSTOMER_T (cust_id) )
+GO
+
+CREATE TABLE CUSTOMER_EMAIL_T
+       (cust_id CHAR(6) NOT NULL,
+        cust_email_id VARCHAR(40) NOT NULL, PRIMARY KEY(cust_id, cust_email_id),
+	FOREIGN KEY (cust_id) REFERENCES CUSTOMER_T (cust_id) )
+GO
+
+CREATE TABLE CUSTOMER_CONTACT_T
+       (cust_id CHAR(6) NOT NULL,
+        cust_contact_number VARCHAR(20) NOT NULL, PRIMARY KEY(cust_id, cust_contact_number),
+	FOREIGN KEY (cust_id) REFERENCES CUSTOMER_T (cust_id) )
+GO
+
+CREATE TABLE CUSTOMER_HOUSE_PHONE_T
+       (cust_id CHAR(6) NOT NULL,
+        cust_house_phone_number VARCHAR(20) NOT NULL, PRIMARY KEY(cust_id, cust_house_phone_number),
+	FOREIGN KEY (cust_id) REFERENCES CUSTOMER_T (cust_id) )
+GO
+
+CREATE TABLE CUSTOMER_SEAT_T
+       (cust_id CHAR(6) NOT NULL, 
+	cust_seat_number CHAR(3) NOT NULL, PRIMARY KEY(cust_id, cust_seat_number),
+	FOREIGN KEY (cust_id) REFERENCES CUSTOMER_T (cust_id) )
+GO
+
+                                            --INSERTING VALUES INTO THE TABLES--
+	
+INSERT INTO FLIGHT_ATTENDANT_T VALUES
+        ('FA00001', 'Janice', 'Park', '05-AUG-1988', 'F', 'F00001', 'EA1709', 'Flight Attendant', 3250.00, 800.00, 500.00, '3671 Atlantic Rd', 'Petaling Jaya', '46050', 'Selangor', 'Malaysia');
+INSERT INTO FLIGHT_ATTENDANT_T VALUES
+        ('FA00002', 'Maria', 'Bowman', '03-APR-1990', 'F', 'F00002', 'EA1709', 'Purser', 5500.00, 1200.00, 900.00, '5487 Mildred Rd', 'Kota Kinabalu', '88000', 'Sabah', 'Malaysia');
+INSERT INTO FLIGHT_ATTENDANT_T VALUES
+        ('FA00003', 'David', 'Hampton', '06-MAY-1989', 'M', 'F00003', 'CA8760', 'Flight Attendant', 3500.00, 750.00, 700.00, '1234 Lotus Drive', 'Seremban', '70100', 'Negeri Sembilan', 'Malaysia');
+INSERT INTO FLIGHT_ATTENDANT_T VALUES
+        ('FA00004', 'Naomi', 'Campbell', '01-DEC-1990', 'F', 'F00004', 'SA1865', 'Leading Flight Attendant', 4200.00, 1010.00, 690.00, '4720 Kent St', 'Ipoh', '51200', 'Perak', 'Malaysia');
+INSERT INTO FLIGHT_ATTENDANT_T VALUES
+        ('FA00005', 'Ashley', 'Herrera', '03-APR-1991', 'F', 'F00005', 'PA2098', 'Purser', 5300.00, 1150.00, 800.00, '8416 Maple Rd', 'Johor Bahru', '80250', 'Johor', 'Malaysia');
+INSERT INTO FLIGHT_ATTENDANT_T VALUES
+        ('FA00006', 'Pandora', 'Waters', '23-JUN-1992', 'F', 'F00006', 'PA2098', 'Purser', 5800.00, 1300.00, 790.00, '2887 Elton Avenue', 'Kuantan', '25200','Pahang', 'Malaysia');
+INSERT INTO FLIGHT_ATTENDANT_T VALUES
+        ('FA00007', 'Brian', 'Fields', '11-FEB-1993', 'M', 'F00007', 'RA1709', 'Flight Attendant', 2800.00, 910.00, 650.00, '3964 Northside Rd', 'Kuching', '93150', 'Sarawak', 'Malaysia');
+INSERT INTO FLIGHT_ATTENDANT_T VALUES
+        ('FA00008', 'Hannah', 'Palmer', '23-MAY-1995', 'F', 'F00008', 'CA8760', 'Leading Flight Attendant', 4700.00, 1050.00, 810.00, '6921 Halton Drive', 'Kuala Lumpur', '50490', 'Wilayah Persekutuan', 'Malaysia');
+INSERT INTO FLIGHT_ATTENDANT_T VALUES
+        ('FA00009', 'Andrea', 'Peters', '17-JAN-1994', 'F', 'F00009', 'EA1709', 'Flight Attendant', 3400.00, 830.00, 520.00, '1564 Mary Lane',  'Klang', '41000', 'Selangor', 'Malaysia');
+INSERT INTO FLIGHT_ATTENDANT_T VALUES
+        ('FA00010', 'Ryan', 'Adams', '12-NOV-1989', 'M', 'F00010', 'PA2098', 'Purser', 5400.00, 1250.00, 770.00, '9345 Ray St', 'Kota Bharu', '16010', 'Kelantan', 'Malaysia');
+
+GO
+
+INSERT INTO CUSTOMER_T VALUES
+        ('C00001', 'Jason', 'Terrell', '12-DEC-1987', 'M', '16L Jln Ellis Kuching', 'Kuching', '93150', 'Sarawak', 'Malaysia');
+INSERT INTO CUSTOMER_T VALUES
+        ('C00002', 'Jenna', 'Palmer', '15-APR-2002', 'F', '9 Wynyard Street', 'Delamere', '52040', 'South Australia', 'Malaysia');
+INSERT INTO CUSTOMER_T VALUES
+        ('C00003', 'Milo', 'John', '21-JAN-1981', 'M', 'G 99 Jln Yam Tuan', 'Seremban', '70000', 'Negeri Sembilan', 'Australia');
+INSERT INTO CUSTOMER_T VALUES
+        ('C00004', 'Susan', 'Parker', '01-MAR-1989', 'F', '239 Jln Genting Kelang', 'Kuala Lumpur', '53300', 'Wilayah Persekutuan', 'Malaysia');
+INSERT INTO CUSTOMER_T VALUES
+        ('C00005', 'Christine', 'Zhang', '10-MAR-1990', 'F', 'Taman Soon Kiong', 'Kota Kinabulu', '88300', 'Sabah', 'Malaysia');
+INSERT INTO CUSTOMER_T VALUES
+        ('C00006', 'Jackson', 'Stark', '30-JUL-1995', 'M', '1054 Kg Sg Liang', 'Belait', '60630', 'Kuala Belait', 'Malaysia');
+INSERT INTO CUSTOMER_T VALUES
+        ('C00007', 'Bryan', 'Wong', '28-JUN-1993', 'M', 'Jalan Lencong Barat', 'Alor Setar', '50501', 'Kedah', 'Brunei');
+INSERT INTO CUSTOMER_T VALUES
+        ('C00008', 'Annabelle', 'Yeow', '16-JAN-1997', 'F', 'Jalan Kempas 4/16', 'Johor Bahru', '81200', 'Johor', 'Malaysia');
+INSERT INTO CUSTOMER_T VALUES
+        ('C00009', 'Kelly', 'Ng', '04-FEB-2000', 'F', 'Lorong Perda 10', 'Bukit Mertajam', '14000', 'Pulau Pinang', 'Malaysia');
+INSERT INTO CUSTOMER_T VALUES
+        ('C00010', 'Max', 'Evan', '08-JUL-1985', 'M', '639 Islington Ave', 'Toronto', '12050', 'Ontario', 'Canada');
+
+GO
+
+INSERT INTO AIRLINE_COMPANY_T VALUES
+	('EA1709', 'Echo Airline', 'echoairline@mail.com', '0303219333', 'Louis', 'Stone', 'Jalan Salak Jaya', 'Kuala Lumpur', 'Wilayah Persekutuan', 50480, 'Malaysia');
+INSERT INTO AIRLINE_COMPANY_T VALUES
+	('SA1865', 'Spark Airways', 'sparkairways@mail.spa.my', '0360085888', 'Jeremy', 'Teh', 'Jalan SS16', 'Petaling Jaya', 'Selangor', 47300, 'Malaysia');
+INSERT INTO AIRLINE_COMPANY_T VALUES
+	('PA2098', 'Peak Airways', 'peakairways@mail.com', '0360185999', 'Charlie', 'Johnson', 'Jalan Tok Ungku', 'Shah Alam', 'Selangor', 40200, 'Malaysia');
+INSERT INTO AIRLINE_COMPANY_T VALUES
+	('CA8760', 'Core Airways', 'coreairways@mail.com', '0301117753', 'Jennifer', 'Swift', 'Jalan Sg Rasah', 'Kuala Lumpur', 'Wilayah Persekutuan', 56100, 'Malaysia');
+
+GO
+
+INSERT INTO BOOKING_OFFICE_T VALUES
+        ('BO001', 'Atrip Ticket Office', 'atrip@mail.com','Sarawak', '154 Jalan Haji Taha', 'Kuching','93400', 'Malaysia', '082250714', 'Amber', 'Diaz');
+INSERT INTO BOOKING_OFFICE_T VALUES
+        ('BO002', 'PIA Ticketing Office', 'piaticketing@mail.com', 'Perak','Jalan Changkat Jong', 'Teluk Intan', '36000', 'Malaysia', '0697630154', 'Sam', 'Liew');
+INSERT INTO BOOKING_OFFICE_T VALUES
+        ('BO003', 'Utravel Ticket Office', 'ultravelticket@mail.com', 'Negeri Sembilan','18 Jalan Bukit Labu', 'Seremban',  '70200', 'Malaysia', '0378037160', 'Peter', 'Ryan');
+INSERT INTO BOOKING_OFFICE_T VALUES
+        ('BO004', 'Explorer Ticketing Office', 'explorer@mail.com', 'Pahang','Jalan Meru Kawasan', 'Kuatan', '56000', 'Malaysia', '0635221525', 'Paul', 'Henry');
+INSERT INTO BOOKING_OFFICE_T VALUES
+        ('BO005', 'Thomson Ticket Office', 'thomsonticket@mail.com', 'Wilayah Persekutuan', '84 Jalan Padang Belia', 'Kuala Lumpur',  '47600', 'Malaysia','0326291671', 'Jovanne', 'Wood');
+INSERT INTO BOOKING_OFFICE_T VALUES
+        ('BO006', 'Kuching Ticket Office', 'kuching_to@mail.com', 'Sabah', '3 Jalan Tiara Sime', 'Kota Kinabulu', '46300', 'Malaysia', '0456205677', 'Andrew', 'Doston');
+
+GO
+
+INSERT INTO FLIGHT_T VALUES
+	('F00001', 30, 19, 11, 102, 10, 92, 'Tee', 'Jing Qian', 'Boris', 'Johnson', 6, 'Sarawak', '31-MAY-2019', '05:30:00', 'Pahang', '31-MAY-2019', '19:30:00');
+INSERT INTO FLIGHT_T VALUES
+	('F00002', 22, 10, 12, 322, 263, 59, 'Erling', 'Braut Haaland', 'Ros', 'Amisya Fatiha Bini Mohd Rizal', 13, 'Sabah', '31-MAY-2019', '06:30:00', 'Sarawak', '31-MAY-2019', '11:00:00');
+INSERT INTO FLIGHT_T VALUES
+	('F00003', 40, 20, 20, 526, 433, 93, 'Sir', 'Tanveer', 'Muhyiddin', 'Yassin', 17, 'Wilayah Persekutuan', '04-JUNE-2019', '12:00:00', 'Negeri Sembilan', '04-JUNE-2019', '14:30:00');
+INSERT INTO FLIGHT_T VALUES
+	('F00004', 10, 10, 0, 86, 12, 74, 'Sir', 'Tanveer', 'Dhason', 'Padakumar', 4, 'Wilayah Persekutuan', '01-JUNE-2019', '07:30:00', 'Negeri Sembilan', '01-JUNE-2019', '10:00:00');
+INSERT INTO FLIGHT_T VALUES
+	('F00005', 60, 44, 16, 724, 666, 58, 'Mikael', 'Tinnason', 'Dhason', 'Padakumar', 20, 'Negeri Sembilan', '28-MAY-2019', '19:30:00', 'Sabah', '28-MAY-2019', '23:00:00');
+INSERT INTO FLIGHT_T VALUES
+	('F00006', 24, 8, 16, 354, 323, 31, 'Damian', 'Lillard', 'Dhason', 'Padakumar', 14, 'Pahang', '02-JUNE-2019', '01:00:00', 'Wilayah Persekutuan', '02-JUNE-2019', '02:00:00');
+INSERT INTO FLIGHT_T VALUES
+	('F00007', 18, 9, 9, 120, 101, 19, 'Erling', 'Braut Haaland', 'Ros', 'Amisya Fatiha Bini Mohd Rizal', 7, 'Wilayah Persekutuan', '26-JUNE-2019', '21:00:00', 'Pahang', '26-JUNE-2019', '22:00:00');
+INSERT INTO FLIGHT_T VALUES
+	('F00008', 38, 36, 2, 468, 267, 201, 'Marsha', 'Binti Khairil Mubin', 'Boris', 'Johnson', 15, 'Sarawak', '30-MAY-2019', '16:00:00', 'Wilayah Persekutuan', '30-MAY-2019', '18:30:00');
+INSERT INTO FLIGHT_T VALUES
+	('F00009', 46, 46, 0, 450, 323, 127, 'Tee', 'Jing Qian', 'Boris', 'Johnson', 13, 'Sabah', '31-MAY-2019', '06:30:00', 'Sarawak', '31-MAY-2019', '11:00:00');
+INSERT INTO FLIGHT_T VALUES
+	('F00010', 36, 33, 3, 444, 111, 333, 'Mikael', 'Tinnason','Dhason', 'Padakumar',  11, 'Sarawak', '06-JUNE-2019', '14:40:00', 'Pahang', '02-JUNE-2019', '15:40:00');
+ 
+GO
+
+INSERT INTO FLIGHT_BOOKING_T VALUES
+	('C00001', 'F00002', 'FBN0025', 'Booked', 'Kuala Lumpur', '12-FEB-2019', 'Business', 350, 350, 0, 'Jason', 'Terrell');
+INSERT INTO FLIGHT_BOOKING_T VALUES
+	('C00002', 'F00002', 'FBN1562', 'Booked', 'Kuala Lumpur', '13-FEB-2019', 'Economy', 200, 200, 0, 'Jenna', 'Palmer');
+INSERT INTO FLIGHT_BOOKING_T VALUES
+	('C00002', 'F00002', 'FBN3200', 'Booked', 'Kuala Lumpur', '13-FEB-2019', 'Economy', 200, 200, 0, 'Jenna', 'Palmer');
+INSERT INTO FLIGHT_BOOKING_T VALUES
+	('C00003', 'F00003', 'FBN9611', 'Cancelled', 'Pahang', '16-FEB-2019', 'Business', 180, 180, 180, 'Milo', 'John');
+INSERT INTO FLIGHT_BOOKING_T VALUES
+	('C00004', 'F00005', 'FBN4900', 'Booked', 'Perak', '05-MAR-2019', 'Economy', 190, 190, 0, 'Susan', 'Parker');
+INSERT INTO FLIGHT_BOOKING_T VALUES
+	('C00004', 'F00005', 'FBN4762', 'Booked', 'Perak', '05-MAR-2019', 'Economy', 190, 190, 0, 'Susan', 'Parker');
+INSERT INTO FLIGHT_BOOKING_T VALUES
+	('C00005', 'F00007', 'FBN3351', 'Scractched', 'Sarawak', '06-MAR-2019', 'Business', 350, 0, 0, 'Christine', 'Zhang');
+INSERT INTO FLIGHT_BOOKING_T VALUES
+	('C00006', 'F00008', 'FBN1010', 'Booked', 'Negeri Sembilan', '10-MAR-2019', 'Business', 350, 350, 350, 'Jackson', 'Stark');
+INSERT INTO FLIGHT_BOOKING_T VALUES
+	('C00007', 'F00009', 'FBN2160', 'Cancelled', 'Sabah', '22-MAR-2019', 'Economy', 200, 200, 200, 'Bryan', 'Wong');
+INSERT INTO FLIGHT_BOOKING_T VALUES
+	('C00010', 'F00010', 'FBN3739', 'Scractched', 'Negeri Sembilan', '30-MAR-2019', 'Business', 350, 0, 0, 'Max', 'Evan');
+
+GO
+
+INSERT INTO PILOT_T VALUES
+	('P00001', 'Boris', 'Johnson', '31-MAY-1975', 'M', 'F00001', 'EA1709', 8.0, 'Co-Captain', 'Pilot', 17000.0, 45000.00, 2530.00, 500.00, '28 A Jalan Sagu 9 Taman Daya', 'Johor Bahru', '81100', 'Johor', 'Malaysia');
+INSERT INTO PILOT_T VALUES
+	('P00002', 'Erling', 'Braut Haaland', '05-APRIL-1976', 'M', 'F00002', 'EA1709', 10.0, 'Captain', 'Senior Pilot', 21212.0, 42319.00, 2715.00, 580.00, 'Wisma Yakin Jln Mesjid India', 'Kuala Lumpur', '50100', 'Wilayah Persekutuan', 'Malaysia');
+INSERT INTO PILOT_T VALUES
+	('P00003', 'Sir', 'Tanveer', '07-AUG-1980', 'M', 'F00003', 'CA8760', 13.0, 'Captain', 'Senior Pilot', 34129.0, 51210.00, 3005.00, 620.00, 'A 19 Jln Maju Taman Maju Jaya', 'Johor Bahru', '80400', 'Johor', 'Malaysia');
+INSERT INTO PILOT_T VALUES
+	('P00004', 'Dhason', 'Padakumar', '26-JUN-1986', 'M', 'F00004', 'SA1865', 5.0, 'Co-Captain', 'Pilot', 10601.0, 43230.00, 2105.00, 3750.00, 'No.36 2nd Floor Jln 11/55A Taman Setiawangsa Hulu', 'Klang', '54200', 'Selangor', 'Malaysia');
+INSERT INTO PILOT_T VALUES
+	('P00005', 'Mikael', 'Tinnason', '01-JAN-1972', 'M', 'F00005', 'PA2098', 17.0, 'Captain', 'Senior Pilot', 41267.0, 61160.00, 5740.00, 725.00, '15 Jalan Sutera Jingga 3 Taman Sutera', 'Johor Bahru', '81200', 'Johor', 'Malaysia');
+INSERT INTO PILOT_T VALUES
+	('P00006', 'Damian', 'Lillard', '23-MAR-1977', 'M', 'F00006', 'PA2098', 12.0, 'Captain', 'Senior Pilot', 23321.0, 50490.00, 2785.00, 595.00, '4th Floor Bangunan Mma Jln Pahang', 'Kuala Lumpur', '53000', 'Wilayah Persekutuan', 'Malaysia');
+INSERT INTO PILOT_T VALUES
+	('P00007', 'Muhyiddin', 'Yassin', '09-JUN-1985', 'M', 'F00007', 'RA1709', 10.0, 'Co-Captain', 'Pilot', 18112.0, 43105.00, 2615.00, 465.00, '36 Jln Emas Sd 5/1A Taman Sri Damansara', 'Kuala Lumpur', '52100', 'Wilayah Persekutuan', 'Malaysia');
+INSERT INTO PILOT_T VALUES
+	('P00008', 'Marsha', 'Binti Khairil Mubin', '03-FEB-1977', 'F', 'F00008', 'CA8760', 13.0, 'Captain', 'Senior Pilot', 28143.0, 51210.00, 3105.00, 615.00, 'Gerai Taman Binamara 39 Jln Haji Taha Kuching', 'Kuching', '93400', 'Sarawak', 'Malaysia');
+INSERT INTO PILOT_T VALUES
+	('P00009', 'Tee', 'Jing Qian', '14-DEC-1979', 'F', 'F00009', 'EA1709', 12.0, 'Captain', 'Senior Pilot', 26543.0, 50050.00, 3200.00, 600.00, 'No. 32 A Jln Gajah', 'Kuala Lumpur', '55100', 'Wilayah Persekutuan', 'Malaysia');
+INSERT INTO PILOT_T VALUES
+	('P00010', 'Ros', 'Amisya Fthia Binti Mohd Rizal', '31-MAY-1975', 'F', 'F00010', 'PA2098', 11.0, 'Co-Captain', 'Senior Pilot', 22110.0, 5670.00, 1785.00, 605.00, '120 Dataran Tasek Timur 6 Anjung Bercham Indah', 'Ipoh', '31400', 'Perak', 'Malaysia');
+
+GO
+
+INSERT INTO PILOT_EMAIL_T VALUES
+	('P00001', 'Boris_Johnson@gmail.com');
+INSERT INTO PILOT_EMAIL_T VALUES
+	('P00002', 'Erling_Haaland@gmail.com');
+INSERT INTO PILOT_EMAIL_T VALUES
+	('P00003', 'Sir_Tanveer@gmail.com');
+INSERT INTO PILOT_EMAIL_T VALUES
+	('P00004', 'Dhason_Padakumar@gmail.com');
+INSERT INTO PILOT_EMAIL_T VALUES
+	('P00005', 'Mikael_Tinnason@gmail.com');
+INSERT INTO PILOT_EMAIL_T VALUES
+	('P00006', 'Damian_Lillard@gmail.com');
+INSERT INTO PILOT_EMAIL_T VALUES
+	('P00007', 'Muhyuddin_Yassin@gmail.com');
+INSERT INTO PILOT_EMAIL_T VALUES
+	('P00008', 'Marsha@gmail.com');
+INSERT INTO PILOT_EMAIL_T VALUES
+	('P00009', 'Tee_JQian@gmail.com');
+INSERT INTO PILOT_EMAIL_T VALUES
+	('P00010', 'Ros@gmail.com');
+
+GO
+
+INSERT INTO FLIGHT_ATTENDANT_EMAIL_T VALUES
+	('FA00001', 'Janice_Park@gmail.com');
+INSERT INTO FLIGHT_ATTENDANT_EMAIL_T VALUES
+	('FA00002', 'Maria_Bowman@gmail.com');
+INSERT INTO FLIGHT_ATTENDANT_EMAIL_T VALUES
+	('FA00003', 'David_Hampton@gmail.com');
+INSERT INTO FLIGHT_ATTENDANT_EMAIL_T VALUES
+	('FA00004', 'Naomi_Campbell@gmail.com');
+INSERT INTO FLIGHT_ATTENDANT_EMAIL_T VALUES
+	('FA00005', 'Ashley_Herrera@gmail.com');
+INSERT INTO FLIGHT_ATTENDANT_EMAIL_T VALUES
+	('FA00006', 'Pandora_Waters@gmail.com');
+INSERT INTO FLIGHT_ATTENDANT_EMAIL_T VALUES
+	('FA00007', 'Brian_Fields@gmail.com');
+INSERT INTO FLIGHT_ATTENDANT_EMAIL_T VALUES
+	('FA00008', 'Hannah_Palmer@gmail.com');
+INSERT INTO FLIGHT_ATTENDANT_EMAIL_T VALUES
+	('FA00009', 'Andrea_Peters@gmail.com');
+INSERT INTO FLIGHT_ATTENDANT_EMAIL_T VALUES
+	('FA00010', 'Ryan_adams@gmail.com');
+
+GO
+
+INSERT INTO PILOT_CONTACT_T VALUES
+	('P00001', '0165559012');
+INSERT INTO PILOT_CONTACT_T VALUES
+	('P00002', '0185555663');
+INSERT INTO PILOT_CONTACT_T VALUES
+	('P00003', '0155550322');
+INSERT INTO PILOT_CONTACT_T VALUES
+	('P00004', '0165556465');
+INSERT INTO PILOT_CONTACT_T VALUES
+	('P00005', '0155550707');
+INSERT INTO PILOT_CONTACT_T VALUES
+	('P00006', '0125559443');
+INSERT INTO PILOT_CONTACT_T VALUES
+	('P00007', '0175556776');
+INSERT INTO PILOT_CONTACT_T VALUES
+	('P00008', '0115550412');
+INSERT INTO PILOT_CONTACT_T VALUES
+	('P00009', '0175554811');
+INSERT INTO PILOT_CONTACT_T VALUES
+	('P00010', '0175554601');
+GO
+
+
+INSERT INTO FLIGHT_ATTENDANT_CONTACT_T VALUES
+	('FA0001', '0112566547');
+INSERT INTO PILOT_CONTACT_T VALUES
+	('FA0002', '0125869823');
+INSERT INTO PILOT_CONTACT_T VALUES
+	('FA0003', '0198526341');
+INSERT INTO PILOT_CONTACT_T VALUES
+	('FA0004', '0171269432');
+INSERT INTO PILOT_CONTACT_T VALUES
+	('FA0005', '0158649752');
+INSERT INTO PILOT_CONTACT_T VALUES
+	('FA0006', '0182322293');
+INSERT INTO PILOT_CONTACT_T VALUES
+	('FA0007', '0127209920');
+INSERT INTO PILOT_CONTACT_T VALUES
+	('FA0008', '0128225693');
+INSERT INTO PILOT_CONTACT_T VALUES
+	('FA0009', '0134822153');
+INSERT INTO PILOT_CONTACT_T VALUES
+	('FA0010', '0119647319');
+
+GO
+
+INSERT INTO AIRLINE_BOOKING_T VALUES
+	('EA1709','BO001');
+INSERT INTO AIRLINE_BOOKING_T VALUES 
+	('SA1865','BO003');
+INSERT INTO AIRLINE_BOOKING_T VALUES
+	('PA2098','BO004');
+INSERT INTO AIRLINE_BOOKING_T VALUES
+	('CA8760','BO002');
+INSERT INTO AIRLINE_BOOKING_T VALUES
+	('EA1709','BO001');
+INSERT INTO AIRLINE_BOOKING_T VALUES
+	('EA1709','BO006');
+INSERT INTO AIRLINE_BOOKING_T VALUES
+	('PA2098','BO005');
+INSERT INTO AIRLINE_BOOKING_T VALUES
+	('CA8760','BO003');
+INSERT INTO AIRLINE_BOOKING_T VALUES
+	('PA2098','BO004');
+INSERT INTO AIRLINE_BOOKING_T VALUES
+	('SA1865','BO005');
+
+GO
+
+INSERT INTO CUSTOMER_FLIGHT_BOOKING_T VALUES
+	('C00001', 'FBN1562');
+INSERT INTO CUSTOMER_FLIGHT_BOOKING_T VALUES
+	('C00002', 'FBN9611');
+INSERT INTO CUSTOMER_FLIGHT_BOOKING_T VALUES
+	('C00003', 'FBN3351');
+INSERT INTO CUSTOMER_FLIGHT_BOOKING_T VALUES
+	('C00004', 'FBN1010');
+INSERT INTO CUSTOMER_FLIGHT_BOOKING_T VALUES
+	('C00005', 'FBN0025');
+INSERT INTO CUSTOMER_FLIGHT_BOOKING_T VALUES
+	('C00006', 'FBN2160'); 
+INSERT INTO CUSTOMER_FLIGHT_BOOKING_T VALUES
+	('C00007', 'FBN4450');
+INSERT INTO CUSTOMER_FLIGHT_BOOKING_T VALUES
+	('C00008', 'FBN4900');
+INSERT INTO CUSTOMER_FLIGHT_BOOKING_T VALUES
+	('C00009', 'FBN3739');
+INSERT INTO CUSTOMER_FLIGHT_BOOKING_T VALUES
+	('C00010', 'FBN4762');
+
+GO
+
+INSERT INTO CUSTOMER_EMAIL_T VALUES
+	('C00001', 'Jason_Terrell@gmail.com');
+INSERT INTO CUSTOMER_EMAIL_T VALUES
+	('C00002', 'Jenna_Palmer@gmail.com');
+INSERT INTO CUSTOMER_EMAIL_T VALUES
+	('C00003', 'Milo_John@gmail.com');
+INSERT INTO CUSTOMER_EMAIL_T VALUES
+	('C00004', 'Susan_Parker@gmail.com');
+INSERT INTO CUSTOMER_EMAIL_T VALUES
+	('C00005', 'Christine_Zhang@gmail.com');
+INSERT INTO CUSTOMER_EMAIL_T VALUES
+	('C00006', 'Jackson_Stark@gmail.com');
+INSERT INTO CUSTOMER_EMAIL_T VALUES
+	('C00007', 'Bryan_Wong@gmail.com');
+INSERT INTO CUSTOMER_EMAIL_T VALUES
+	('C00008', 'Annabelle_Yeow@email.com');
+INSERT INTO CUSTOMER_EMAIL_T VALUES
+	('C00009', 'Kelly_Ng@email.com');
+INSERT INTO CUSTOMER_EMAIL_T VALUES
+	('C00010', 'Max_Evan@email.com');
+GO
+
+INSERT INTO CUSTOMER_CONTACT_T VALUES
+	('C00001', '0124768924');
+INSERT INTO CUSTOMER_CONTACT_T VALUES
+	('C00002', '0132083065');
+INSERT INTO CUSTOMER_CONTACT_T VALUES
+	('C00003', '0146242458');
+INSERT INTO CUSTOMER_CONTACT_T VALUES
+	('C00004', '0122972784');
+INSERT INTO CUSTOMER_CONTACT_T VALUES
+	('C00005', '0178522573');
+INSERT INTO CUSTOMER_CONTACT_T VALUES
+	('C00006', '0186252300');
+INSERT INTO CUSTOMER_CONTACT_T VALUES
+	('C00007', '0157353740');
+INSERT INTO CUSTOMER_CONTACT_T VALUES
+	('C00008', '0134948282');
+INSERT INTO CUSTOMER_CONTACT_T VALUES
+	('C00009', '0181509742');
+INSERT INTO CUSTOMER_CONTACT_T VALUES
+	('C00010', '0158350930');
+
+GO
+
+INSERT INTO CUSTOMER_HOUSE_PHONE_T VALUES
+	('C00001', '0319572464');
+INSERT INTO CUSTOMER_HOUSE_PHONE_T VALUES
+	('C00002', '0326382953');
+INSERT INTO CUSTOMER_HOUSE_PHONE_T VALUES
+	('C00003', '0331967531');
+INSERT INTO CUSTOMER_HOUSE_PHONE_T VALUES
+	('C00004', '0377422477');
+INSERT INTO CUSTOMER_HOUSE_PHONE_T VALUES
+	('C00005', '0352489253');
+INSERT INTO CUSTOMER_HOUSE_PHONE_T VALUES
+	('C00006', '0362848973');
+INSERT INTO CUSTOMER_HOUSE_PHONE_T VALUES
+	('C00007', '0372532584');
+INSERT INTO CUSTOMER_HOUSE_PHONE_T VALUES
+	('C00008', '0382032639');
+INSERT INTO CUSTOMER_HOUSE_PHONE_T VALUES
+	('C00009', '0392537482');
+INSERT INTO CUSTOMER_HOUSE_PHONE_T VALUES
+	('C00010', '0310272847');
+
+INSERT INTO CUSTOMER_HOUSE_PHONE_T VALUES
+
+GO
+
+INSERT INTO CUSTOMER_SEAT_T VALUES
+	('C00001', '27A');
+INSERT INTO CUSTOMER_SEAT_T VALUES
+	('C00002', '4A');
+INSERT INTO CUSTOMER_SEAT_T VALUES
+	('C00003', '30D');
+INSERT INTO CUSTOMER_SEAT_T VALUES
+	('C00004', '9B');
+INSERT INTO CUSTOMER_SEAT_T VALUES
+	('C00005', '27B');
+INSERT INTO CUSTOMER_SEAT_T VALUES
+	('C00006', '8E');
+INSERT INTO CUSTOMER_SEAT_T VALUES
+	('C00007', '21B');
+INSERT INTO CUSTOMER_SEAT_T VALUES
+	('C00008', '15D');
+INSERT INTO CUSTOMER_SEAT_T VALUES
+	('C00009', '27C'); 
+INSERT INTO CUSTOMER_SEAT_T VALUES
+	('C00010', '6F');
+
+GO
