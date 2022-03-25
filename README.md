@@ -1,5 +1,5 @@
 # Malaysia-Airlines-Reservation-System
-Designed, implemented and documented a database system for Malaysia Airline Reservation System using Microsoft SQL with my peers.
+Designed, implemented and documented a simple database management system (DBMS) for Malaysia Airline Reservation System using Microsoft SQL with my peers.
 
 During the designing phase, ERD and EERD were first drawm. Below shows the ERD and EERD for the designed reservation system.
 ## ERD
